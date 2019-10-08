@@ -19,7 +19,7 @@ ui <- fluidPage(
                         actionButton("plot_map", "Plot map")
                       ),
                       mainPanel(
-                        leafletOutput("mymap") # leaflet map goes here in ui
+                        leafletOutput("mymap", height = "100%") # leaflet map goes here in ui
                       )),
              tabPanel("Flickr parameters",
                       mainPanel(
@@ -103,12 +103,13 @@ server <- function(input,output,session) {
     rownames(top_output) <- 1:no_of_urls
     
     photo_meta$DAT <- cbind(photo_meta$DAT, top_output$cname1)
+    colnames(photo_meta$DAT)[ncol(photo_meta$DAT)] <- "cname1"
     
     output$complete_plants <- renderTable(photo_meta$DAT)
     
     
     output$mymap <- renderLeaflet({
-      map = leaflet() %>% addTiles() %>% setView(-0.096024, 51.531786,  zoom = 10) %>% addMarkers(data = photo_meta$DAT, lng = photo_meta$DAT$longitude, lat = photo_meta$DAT$latitude, popup = paste0(photo_meta$DAT$top_output$cname1, "<p>", photo_meta$DAT$tags, "<p><img src = ", photo_meta$DAT$url_l, " height='200px%'>"))
+      map = leaflet() %>% addTiles() %>% setView(-0.096024, 51.531786,  zoom = 10) %>% addMarkers(data = photo_meta$DAT, lng = photo_meta$DAT$longitude, lat = photo_meta$DAT$latitude, popup = paste0(photo_meta$DAT$cname1, "<p>", photo_meta$DAT$tags, "<p><img src = ", photo_meta$DAT$url_l, " height='200px%'>"))
       
     })
     
