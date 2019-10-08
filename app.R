@@ -1,5 +1,7 @@
 library(shiny)
 library(leaflet)
+library(photosearcher)
+
 
 ##
 
@@ -18,11 +20,10 @@ ui <- fluidPage(
                       ),
                       mainPanel(
                         leafletOutput("mymap") # leaflet map goes here in ui
-                        
                       )),
              tabPanel("Flickr parameters",
                       mainPanel(
-                        # flickr table of parameters goes here
+                        strong(tableOutput("complete"))
                       )
              )
   )
@@ -31,7 +32,15 @@ ui <- fluidPage(
 server <- function(input,output,session) {
   
   observeEvent(input$photo, {
-    # code for photosearch goes here, either taking input from Flickr input or in the server script
+    photo_meta <- photo_search(mindate_taken = "2019-07-01",
+                               maxdate_taken = "2019-08-01",
+                               tags = c("tree, plant, flower"),
+                               tags_any = FALSE,
+                               bbox = "-0.312836,51.439050,-0.005219,51.590237")
+    
+    urls <- data.frame(photo_meta)
+    output$complete <- renderTable(photo_meta)
+    
   })
   
   observeEvent(input$plantnet, {

@@ -1,6 +1,6 @@
 #basic example
-library(devtools)
-devtools::install_github("nfox29/photosearcher")
+#library(devtools)
+#devtools::install_github("nfox29/photosearcher")
 library(photosearcher)
 
 
