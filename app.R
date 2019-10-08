@@ -16,7 +16,6 @@ ui <- fluidPage(
                         actionButton("photo", "Run photo search"),
                         br(),
                         br(),
-                        actionButton("plantnet", "Run Plantnet"),
                         actionButton("plot_map", "Plot map")
                       ),
                       mainPanel(
@@ -25,6 +24,10 @@ ui <- fluidPage(
              tabPanel("Flickr parameters",
                       mainPanel(
                         strong(tableOutput("complete"))
+                      )),
+             tabPanel("Plantnet parameters",
+                      mainPanel(
+                        strong(tableOutput("complete_plants"))
                       )
              )
   )
@@ -32,19 +35,23 @@ ui <- fluidPage(
 
 server <- function(input,output,session) {
   
+  photo_meta <- reactiveValues(DAT=NULL)
+  
   observeEvent(input$photo, {
-    photo_meta <- photo_search(mindate_taken = "2019-07-01",
-                               maxdate_taken = "2019-08-01",
+    
+    photo_meta$DAT <- photo_search(mindate_taken = "2019-07-05",
+                               maxdate_taken = "2019-07-18",
                                tags = c("tree, plant, flower"),
                                tags_any = FALSE,
                                bbox = "-0.312836,51.439050,-0.005219,51.590237")
     
-    urls <- data.frame(photo_meta)
-    output$complete <- renderTable(photo_meta)
+    urls <- data.frame(photo_meta$DAT)
+    
+    output$complete <- renderTable(photo_meta$DAT)
     
   })
   
-  observeEvent(input$plantnet, {
+  observeEvent(input$plot_map, {
     
     key <- "2a10egBxTG839st87lMrBoWQ"
     
@@ -54,11 +61,10 @@ server <- function(input,output,session) {
     # Read csv test file of URL's
     #url_list <- read.csv("photo_search_intial.csv", stringsAsFactors = FALSE)
     
-    url_list <- photo_meta
+    url_list <- photo_meta$DAT
     
     ids_urls <- url_list[, c("id", "latitude", "longitude", "datetaken", "url_l")]
     no_of_urls <- nrow(ids_urls)
-    
     
     # Need to fix datetaken which comes in as a factor
     
@@ -96,12 +102,13 @@ server <- function(input,output,session) {
     top_output <- top_output[-1,]
     rownames(top_output) <- 1:no_of_urls
     
-  })
-  
-  observeEvent(input$plot_map, {
+    photo_meta$DAT <- cbind(photo_meta$DAT, top_output$cname1)
+    
+    output$complete_plants <- renderTable(photo_meta$DAT)
+    
     
     output$mymap <- renderLeaflet({
-      map = leaflet() %>% addTiles() %>% setView(-0.096024, 51.531786,  zoom = 10) %>% addMarkers(data = photo_meta, lng = photo_meta$longitude, lat = photo_meta$latitude, popup = paste0(photo_meta$tags, "<p><img src = ", photo_meta$URLS, " height='200px%'>"))
+      map = leaflet() %>% addTiles() %>% setView(-0.096024, 51.531786,  zoom = 10) %>% addMarkers(data = photo_meta$DAT, lng = photo_meta$DAT$longitude, lat = photo_meta$DAT$latitude, popup = paste0(photo_meta$DAT$top_output$cname1, "<p>", photo_meta$DAT$tags, "<p><img src = ", photo_meta$DAT$url_l, " height='200px%'>"))
       
     })
     
