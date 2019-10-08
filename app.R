@@ -1,12 +1,16 @@
 library(shiny)
 library(leaflet)
 
+##
+
 ui <- fluidPage(
-  titlePanel("Plantnet mapper"),
+  titlePanel("Real time plant observations in London"),
   navbarPage("", 
              tabPanel("Map",
                       sidebarPanel(
-                        selectInput("Flickr", "Enter flickr terms", c("plant", "plants")),
+                        dateRangeInput('dateRange',
+                                       label = 'Date Range'),
+                        selectInput("Flickr", "Select Tag", c("flower","tree","plant")),
                         actionButton("photo", "Run photo search"),
                         br(),
                         br(),
