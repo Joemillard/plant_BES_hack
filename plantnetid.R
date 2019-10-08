@@ -16,8 +16,8 @@ no_of_urls <- nrow(ids_urls)
 
 # Need to fix datetaken which comes in as a factor
 
-top_output <- data.frame(matrix(NA, nrow=1, ncol=10))
-colnames(top_output) <- c("id", "latitude", "longitude", "datetaken", "prob1", "cname1", "prob2", "cname2", "prob3", "cname3")
+top_output <- data.frame(matrix(NA, nrow=1, ncol=11))
+colnames(top_output) <- c("id", "latitude", "longitude", "datetaken", "url_l", "prob1", "cname1", "prob2", "cname2", "prob3", "cname3")
 loop_output <- top_output
 
 for(i in 1:no_of_urls){
@@ -26,6 +26,7 @@ for(i in 1:no_of_urls){
   loop_output[1, "latitude"] <- ids_urls[i, 2]
   loop_output[1, "longitude"] <- ids_urls[i, 3]
   loop_output[1, "datetaken"] <- ids_urls[i, 4]
+  loop_output[1, "url_l"] <- ids_urls[i, 5]
   if(nrow(this_url) == 1){
     loop_output[1, "prob1"] <- NA
     loop_output[1, "cname1"] <- NA
@@ -43,8 +44,8 @@ for(i in 1:no_of_urls){
     loop_output[1, "cname3"] <- unlist(this_url[3, 3]) # 3rd name
   }
   top_output <- rbind(top_output, loop_output)
-  loop_output <- data.frame(matrix(NA, nrow=1, ncol=10))
-  colnames(loop_output) <- c("id", "latitude", "longitude", "datetaken", "prob1", "cname1", "prob2", "cname2", "prob3", "cname3")
+  loop_output <- data.frame(matrix(NA, nrow=1, ncol=11))
+  colnames(loop_output) <- c("id", "latitude", "longitude", "datetaken", "url_l", "prob1", "cname1", "prob2", "cname2", "prob3", "cname3")
 }
 top_output <- top_output[-1,]
 rownames(top_output) <- 1:no_of_urls
