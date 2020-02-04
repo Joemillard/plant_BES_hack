@@ -2,8 +2,6 @@
 
 library(plantnet)
 
-key <- "2a10egBxTG839st87lMrBoWQ"
-
 # imageURL <- 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Single_lavendar_flower02.jpg/800px-Single_lavendar_flower02.jpg'
 # classifications <- identify(key, imageURL)
 
